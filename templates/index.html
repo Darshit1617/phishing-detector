@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phishing URL Detector</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>PHISHING DETECTOR</h1>
+            <p>Check if a URL is suspicious</p>
+        </header>
+        
+        <main>
+            <div class="url-form">
+                <div class="input-group">
+                    <input type="text" id="url-input" placeholder="Enter URL to check" required>
+                    <button id="check-button">CHECK</button>
+                </div>
+            </div>
+            
+            <div id="loader" class="hidden">
+                <div class="spinner"></div>
+            </div>
+            
+            <div id="result" class="hidden">
+                <div id="result-card">
+                    <div id="result-icon"></div>
+                    <div id="result-content">
+                        <h2 id="result-title"></h2>
+                        <p id="result-description"></p>
+                        <p id="result-confidence"></p>
+                    </div>
+                </div>
+                <button id="check-another">CHECK ANOTHER URL</button>
+            </div>
+        </main>
+        
+        <footer>
+            <p>Phishing URL Detector &copy; 2025</p>
+        </footer>
+    </div>
+    
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
