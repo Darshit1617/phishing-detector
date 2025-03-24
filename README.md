@@ -2,7 +2,6 @@
 
 A machine learning-powered web application that detects phishing URLs using XGBoost. The application analyzes various URL features to identify potential phishing sites, helping users stay safe online.
 
-![Phishing URL Detector Screenshot](https://media-hosting.imagekit.io//6b8774e70322455f/Screenshot%202025-03-24%20at%202.02.29%E2%80%AFPM.png?Expires=1837413173&Key-Pair-Id=K2ZIVPTIP2VGHC&Signature=ij0izAIeeppSto3s6GC2OzJIUVJcLGg~lYVUfF7QbsodJPSY3Qe2CZTJLGqU2Lx~lCEGvIufnnadnEgTz9OuFXnrXAQbpW3Ai-xzZxmwrOkneUAj4BRrP8vFPmDQebLycm5YrueVhQyEK8cGS9PcxXhJCBTS2cdWHyR-IIrPGR~ylxb-qNU2hmOeNCX00SgwXFg93OczAf2FcAJqTujb823LtNufgP4o-Dbd7w28Ig1t6u-oK~F0O-8ha~zON4NjhpcZriwgo3G04hn87S2ObBTS0yfS78-y01nQnuRsavcm3QCNZYs1Xm2f-mCxHrycos3lIM-1wvRJSJL60Wqgxw__)
 
 ## 📋 Table of Contents
 - [Features](#features)
