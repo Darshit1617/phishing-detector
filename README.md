@@ -75,7 +75,7 @@ These features are fed into an XGBoost classifier trained on a dataset of labele
 ### Setup
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/phishing-url-detector.git
+   git clone https://github.com/Darshit1617/phishing-url-detector.git
    cd phishing-url-detector
    ```
 
@@ -94,7 +94,7 @@ These features are fed into an XGBoost classifier trained on a dataset of labele
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/phishing-url-detector.git
+   git clone https://github.com/Darshit1617/phishing-url-detector.git
    cd phishing-url-detector
    ```
 
