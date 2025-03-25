@@ -1,38 +1,58 @@
-from flask import Flask, render_template, request, jsonify
-from utils import load_model_resources, predict_url
+from flask import Flask, request, jsonify
 import os
+import joblib
+import numpy as np
+from utils import enhance_phishing_check  # Import the new function
 
 app = Flask(__name__)
 
-# Load model resources once when the app starts
-model, label_encoder, feature_columns, ranked_domains_df = load_model_resources()
+# Load pre-trained model and other necessary files
+model = joblib.load('model/phishing_detector_model.pkl')
+label_encoder = joblib.load('model/label_encoder.pkl')
+feature_columns = joblib.load('model/feature_columns.pkl')
 
-@app.route('/')
-def index():
-    return render_template('index.html')
+# Get VirusTotal API key from environment variable
+VIRUSTOTAL_API_KEY = os.getenv('VIRUSTOTAL_API_KEY')
 
-@app.route('/check', methods=['POST'])
-def check_url():
-    data = request.get_json()
-    url = data.get('url', '')
-    
-    # Add http:// prefix if not present
-    if not url.startswith('http://') and not url.startswith('https://'):
-        url = 'http://' + url
-    
+@app.route('/detect_phishing', methods=['POST'])
+def detect_phishing():
     try:
-        result = predict_url(url, model, label_encoder, ranked_domains_df, feature_columns)
+        # Get URL from request
+        url = request.json.get('url', '')
+        
+        # Perform initial ML prediction
+        # Assuming you have a function to extract features from URL
+        url_features = extract_url_features(url)
+        
+        # Predict probability of phishing
+        ml_prediction = model.predict_proba([url_features])[0][1]
+        
+        # Enhance prediction with VirusTotal check
+        enhanced_result = enhance_phishing_check(
+            url, 
+            ml_prediction, 
+            virustotal_api_key=VIRUSTOTAL_API_KEY
+        )
+        
         return jsonify({
-            'safe': result['safe'],
-            'probability': f"{result['probability']*100:.1f}",
-            'prediction': result['prediction']
+            'url': url,
+            'phishing_probability': enhanced_result['ml_prediction'],
+            'virustotal_details': enhanced_result.get('virustotal_check')
         })
+    
     except Exception as e:
-        print(f"Error analyzing URL: {str(e)}")
         return jsonify({
-            'error': 'Error analyzing URL',
-            'message': str(e)
+            'error': str(e),
+            'message': 'Error in phishing detection'
         }), 500
+
+def extract_url_features(url):
+    # Implement your existing feature extraction logic here
+    # This should return the same feature vector used during model training
+    # Example (replace with your actual feature extraction):
+    features = []
+    # Add your feature extraction steps
+    return features
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 8080)))
