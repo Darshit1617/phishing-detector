@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', function() {
         result.classList.add('hidden');
         
         // API call to check URL
-        fetch('/check', {
+        fetch('/detect_phishing', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
