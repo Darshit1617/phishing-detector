@@ -9,76 +9,50 @@ document.addEventListener('DOMContentLoaded', function() {
     const resultDescription = document.getElementById('result-description');
     const resultConfidence = document.getElementById('result-confidence');
 
-    checkButton.addEventListener('click', function() {
-        checkUrl();
-    });
+    const API_BASE_URL = 'https://phishing-detector-pnz9.onrender.com'; // Update with your Render deployment URL
 
+    checkButton.addEventListener('click', checkUrl);
     urlInput.addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-            checkUrl();
-        }
+        if (e.key === 'Enter') checkUrl();
     });
 
     checkAnotherButton.addEventListener('click', function() {
-        // Clear the input and hide results
         urlInput.value = '';
         result.classList.add('hidden');
-        
-        // Show the form again
         urlInput.focus();
     });
 
     function checkUrl() {
         const url = urlInput.value.trim();
-        
         if (!url) {
             alert('Please enter a URL to check');
             return;
         }
-        
-        // Show loader
+
         loader.classList.remove('hidden');
         result.classList.add('hidden');
-        
-        // API call to check URL
-        fetch('/detect_phishing', {
+
+        fetch(`${API_BASE_URL}/detect_phishing`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ url: url })
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ url })
         })
         .then(response => response.json())
         .then(data => {
-            // Hide loader
             loader.classList.add('hidden');
-            
-            // Check for error
-            if (data.error) {
-                showError(data.message || 'An error occurred while analyzing the URL');
-                return;
-            }
-            
-            // Show results
-            if (data.safe) {
-                resultIcon.innerHTML = '✅';
-                resultIcon.className = 'safe';
-                resultTitle.textContent = 'URL is Safe';
-                resultTitle.className = 'safe';
-                resultDescription.textContent = 'This URL appears to be legitimate.';
-            } else {
-                resultIcon.innerHTML = '⚠️';
-                resultIcon.className = 'unsafe';
-                resultTitle.textContent = 'Warning: Potential Phishing';
-                resultTitle.className = 'unsafe';
-                resultDescription.textContent = 'This URL has characteristics of phishing websites.';
-            }
-            
-            resultConfidence.textContent = `Confidence: ${data.probability}%`;
+            if (data.error) return showError(data.message || 'Error analyzing URL');
+
+            resultIcon.innerHTML = data.phishing_probability < 50 ? '✅' : '⚠️';
+            resultIcon.className = data.phishing_probability < 50 ? 'safe' : 'unsafe';
+            resultTitle.textContent = data.phishing_probability < 50 ? 'URL is Safe' : 'Warning: Potential Phishing';
+            resultTitle.className = data.phishing_probability < 50 ? 'safe' : 'unsafe';
+            resultDescription.textContent = data.phishing_probability < 50 
+                ? 'This URL appears to be legitimate.' 
+                : 'This URL has characteristics of phishing websites.';
+            resultConfidence.textContent = `Confidence: ${data.phishing_probability.toFixed(2)}%`;
             result.classList.remove('hidden');
         })
-        .catch(error => {
-            console.error('Error:', error);
+        .catch(() => {
             loader.classList.add('hidden');
             showError('Network error: Could not connect to server');
         });
